@@ -6,8 +6,6 @@ var keyPressed = [];
 var dragData = {};
 var toRad = Math.PI / 180;
 
-//TODO optimiser cette merde
-
 // FPS
 var start, fps = 0;
 
@@ -17,7 +15,7 @@ function init() {
 
     scene = new ENGINE.Scene();
 
-    for(var i = 0; i < 500; i++) {
+    for(var i = 0; i < 100; i++) {
         var randX = Math.random() * 10 - 5;
         var randY = Math.random() * 10 - 5;
         var randZ = Math.random() * 10 + 5;
@@ -94,12 +92,12 @@ function countFPS() {
 }
 
 /**
- * Excute les actions qui découlent des touches du clavier activées
+ * Execute les actions qui découlent des touches du clavier activées
  */
 function handleKeyboardEvent() {
     for(key of keyPressed) {
         if(key == 97 || key == 98) {
-            var dy = -((key - 97.5) * 2 * 0.1);
+            var dy = -((key - 97.5) * 0.2);
             scene.camera.translate(new ENGINE.Vec3(0, dy, 0));
         } else {
             var dz = -((key - 39) % 2) * 0.1;
@@ -115,8 +113,8 @@ function handleKeyboardEvent() {
  */
 function handleMouseDrag() {
     if(dragData["mousePressed"]) {
-        var yaw = dragData["dx"] * toRad * 0.25;
-        var pitch = dragData["dy"] * toRad * 0.25;
+        var yaw = dragData["dx"] * toRad * 0.35;
+        var pitch = dragData["dy"] * toRad * 0.35;
 
         // TODO trouver pourquoi le pitch s'effectue dans le paramètre roll
         scene.camera.rotate(new ENGINE.Euler(yaw, 0, pitch));

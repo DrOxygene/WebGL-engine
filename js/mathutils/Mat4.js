@@ -58,6 +58,12 @@ ENGINE.Mat4.prototype = {
         ]));
     },
 
+    /**
+     * Défini cette matrice comme une matrice de
+     * translation pure
+     * @param trans {ENGINE.Vec3} translation
+     * @returns {ENGINE.Mat4}
+     */
     setTranslation: function (trans) {
         return this.set([
             1, 0, 0, 0,
@@ -155,7 +161,8 @@ ENGINE.Mat4.prototype = {
      * @returns {ENGINE.Mat4} matrice d'adjacence
      */
     adjoin: function () {
-        // TODO OMG fait un truc plus propre
+        // OMG c'est très moche mais c'est la seule manière qui marche
+
         var m00 = this.data[0], m01 = this.data[1], m02 = this.data[2], m03 = this.data[3],
             m10 = this.data[4], m11 = this.data[5], m12 = this.data[6], m13 = this.data[7],
             m20 = this.data[8], m21 = this.data[9], m22 = this.data[10], m23 = this.data[11],
@@ -179,7 +186,6 @@ ENGINE.Mat4.prototype = {
         out[15] = m01*m12*m20 - m02*m11*m20 + m02*m10*m21 - m00*m12*m21 - m01*m10*m22 + m00*m11*m22;
 
         return new ENGINE.Mat4(out);
-
     },
 
     /**
@@ -187,24 +193,15 @@ ENGINE.Mat4.prototype = {
      * @returns {number} determinant
      */
     det: function () {
-        // TODO OMG ici aussi c'est moche
         var m00 = this.data[0], m01 = this.data[1], m02 = this.data[2], m03 = this.data[3],
             m10 = this.data[4], m11 = this.data[5], m12 = this.data[6], m13 = this.data[7],
             m20 = this.data[8], m21 = this.data[9], m22 = this.data[10], m23 = this.data[11],
             m30 = this.data[12], m31 = this.data[13], m32 = this.data[14], m33 = this.data[15];
 
-        return m03 * m12 * m21 * m30 - m02 * m13 * m21 * m30-
-            m03 * m11 * m22 * m30+m01 * m13 * m22 * m30+
-            m02 * m11 * m23 * m30-m01 * m12 * m23 * m30-
-            m03 * m12 * m20 * m31+m02 * m13 * m20 * m31+
-            m03 * m10 * m22 * m31-m00 * m13 * m22 * m31-
-            m02 * m10 * m23 * m31+m00 * m12 * m23 * m31+
-            m03 * m11 * m20 * m32-m01 * m13 * m20 * m32-
-            m03 * m10 * m21 * m32+m00 * m13 * m21 * m32+
-            m01 * m10 * m23 * m32-m00 * m11 * m23 * m32-
-            m02 * m11 * m20 * m33+m01 * m12 * m20 * m33+
-            m02 * m10 * m21 * m33-m00 * m12 * m21 * m33-
-            m01 * m10 * m22 * m33+m00 * m11 * m22 * m33;
+        return m30 * (m03 * m12 * m21 - m02 * m13 * m21 - m03 * m11 * m22 + m01 * m13 * m22 + m02 * m11 * m23 - m01 * m12 * m23) +
+               m31 * (-m03 * m12 * m20 + m02 * m13 * m20 + m03 * m10 * m22 - m00 * m13 * m22 - m02 * m10 * m23 + m00 * m12 * m23) +
+               m32 * (m03 * m11 * m20 - m01 * m13 * m20 - m03 * m10 * m21 + m00 * m13 * m21 + m01 * m10 * m23 - m00 * m11 * m23) +
+               m33 * (-m02 * m11 * m20 + m01 * m12 * m20 + m02 * m10 * m21 - m00 * m12 * m21 - m01 * m10 * m22 + m00 * m11 * m22 * m33);
     },
 
     /**
@@ -212,8 +209,9 @@ ENGINE.Mat4.prototype = {
      * @returns {ENGINE.Mat4}
      */
     inverse: function () {
-        // TODO prévoir le cas ou la matrice n'a pas d'inverse
-        return this.adjoin().scalarMultiply(1 / this.det());
+        var det = this.det();
+        if(det == 0) throw "Impossible d'inverser la matrice. Determinant = 0";
+        return this.adjoin().scalarMultiply(1 / det);
     },
 
     /**

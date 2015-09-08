@@ -7,8 +7,8 @@ ENGINE.Scene = function() {
 
     this.camera = new ENGINE.Camera().setPositionRotation(new ENGINE.Vec3(2, 0, 0), new ENGINE.Euler(0, 0, 0));
 
-    this.mvMatrixArray = [];
-    this.mvMatrix = new ENGINE.Mat4();
+    this.mMatrixArray = [];
+    this.mMatrix = new ENGINE.Mat4();
     this.pMatrix = new ENGINE.Mat4().perspective(Math.PI / 2, ENGINE.GL.viewportWidth / ENGINE.GL.viewportHeight, -0.01, 1); // TODO changer le type de camera grâce aux paramètres de la classe ENGINE
 
     ENGINE.GL.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -33,18 +33,18 @@ ENGINE.Scene.prototype = {
     },
 
     /**
-     * Empile la matrice modèle-vue
+     * Empile la matrice modèle
      */
     pushMatrix: function () {
-        this.mvMatrixArray.push(this.mvMatrix.clone());
+        this.mMatrixArray.push(this.mMatrix.clone());
     },
 
     /**
-     * Dépile la dernière matrice modèle-vue
+     * Dépile la dernière matrice modèle
      */
     popMatrix: function () {
-        this.mvMatrix = this.mvMatrixArray[this.mvMatrixArray.length - 1];
-        this.mvMatrixArray.pop();
+        this.mMatrix = this.mMatrixArray[this.mMatrixArray.length - 1];
+        this.mMatrixArray.pop();
     },
 
     /**
@@ -52,7 +52,7 @@ ENGINE.Scene.prototype = {
      */
     setMVPMatrix: function () {
         var mvpMatrix = this.pMatrix.clone();
-        mvpMatrix.multiply(this.camera.getViewMatrix()).multiply(this.mvMatrix);
+        mvpMatrix.multiply(this.camera.getViewMatrix()).multiply(this.mMatrix);
         ENGINE.GL.uniformMatrix4fv(ENGINE.shaderProgram.mvpMatrixUniform, false, mvpMatrix.data);
     },
 

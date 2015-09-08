@@ -107,9 +107,9 @@ ENGINE.Box.prototype.renderShape = function(scene) {
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
 
     scene.pushMatrix();
-        scene.mvMatrix.translate(this.position);
-        scene.mvMatrix.rotateFromQuaternion(this.qRotation);
-        scene.mvMatrix.scale([this.width, this.height, this.depth]);
+        scene.mMatrix.translate(this.position);
+        scene.mMatrix.rotateFromQuaternion(this.qRotation);
+        scene.mMatrix.scale([this.width, this.height, this.depth]);
         GL.drawElements(GL.TRIANGLES, this.vertexIndexBuffer.numItems, GL.UNSIGNED_SHORT, 0);
         scene.setMVPMatrix();
     scene.popMatrix();
