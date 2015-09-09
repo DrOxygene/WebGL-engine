@@ -14,42 +14,6 @@ ENGINE.Box = function(position, rotation, width, height, depth) {
     this.depth = depth;
 
     var GL = ENGINE.GL;
-    this.vertexPositionBuffer = GL.createBuffer();
-    GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexPositionBuffer);
-    var vertices = [
-        -1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0,
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, 1.0,
-
-        1.0, 1.0, 1.0,
-        1.0, -1.0, 1.0,
-        1.0, -1.0, -1.0,
-        1.0, 1.0, -1.0,
-
-        1.0, 1.0, -1.0,
-        1.0, -1.0, -1.0,
-        -1.0, -1.0, -1.0,
-        -1.0, 1.0, -1.0,
-
-        -1.0, 1.0, -1.0,
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0, 1.0,
-        -1.0, 1.0, 1.0,
-
-        1.0, -1.0, -1.0,
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0,
-
-        -1.0, 1.0, -1.0,
-        -1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0,
-        1.0, 1.0, -1.0
-    ];
-    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(vertices), GL.STATIC_DRAW);
-    this.vertexPositionBuffer.itemSize = 3;
-    this.vertexPositionBuffer.numItem = 24;
 
     this.vertexColorBuffer = GL.createBuffer();
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexColorBuffer);
@@ -71,20 +35,6 @@ ENGINE.Box = function(position, rotation, width, height, depth) {
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(unpackedColors), GL.STATIC_DRAW);
     this.vertexColorBuffer.itemSize = 4;
     this.vertexColorBuffer.numItems = 24;
-
-    this.vertexIndexBuffer = GL.createBuffer();
-    GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
-    var vertexIndices = [
-        0, 1, 2,    0, 2, 3,
-        4, 5, 6,    4, 6, 7,
-        8, 9, 10,   8, 10, 11,
-        12, 13, 14, 12, 14, 15,
-        16, 17, 18, 16, 18, 19,
-        20, 21, 22, 20, 22, 23
-    ];
-    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), GL.STATIC_DRAW);
-    this.vertexIndexBuffer.itemSize = 1;
-    this.vertexIndexBuffer.numItems = 36;
 };
 
 ENGINE.Box.prototype = Object.create(ENGINE.Shape.prototype);
@@ -97,20 +47,22 @@ ENGINE.Box.constructor = ENGINE.Box;
 ENGINE.Box.prototype.renderShape = function(scene) {
     //TODO voir si code redondant dans les autre classes de formes, pour les regrouper dans la classe shape
     var GL = ENGINE.GL;
+    var vertexPositionBuffer = ENGINE.GeometryUtils.getCubeVertexPosition();
+    var vertexIndexBuffer = ENGINE.GeometryUtils.getCubeVertexIndex();
 
-    GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexPositionBuffer);
-    GL.vertexAttribPointer(ENGINE.shaderProgram.vertexPositionAttribute, this.vertexPositionBuffer.itemSize, GL.FLOAT, false, 0, 0);
+    GL.bindBuffer(GL.ARRAY_BUFFER, vertexPositionBuffer);
+    GL.vertexAttribPointer(ENGINE.shaderProgram.vertexPositionAttribute, vertexPositionBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexColorBuffer);
     GL.vertexAttribPointer(ENGINE.shaderProgram.vertexColorAttribute, this.vertexColorBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
-    GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+    GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
     scene.pushMatrix();
         scene.mMatrix.translate(this.position);
         scene.mMatrix.rotateFromQuaternion(this.qRotation);
         scene.mMatrix.scale([this.width, this.height, this.depth]);
-        GL.drawElements(GL.TRIANGLES, this.vertexIndexBuffer.numItems, GL.UNSIGNED_SHORT, 0);
+        GL.drawElements(GL.TRIANGLES, vertexIndexBuffer.numItems, GL.UNSIGNED_SHORT, 0);
         scene.setMVPMatrix();
     scene.popMatrix();
 };

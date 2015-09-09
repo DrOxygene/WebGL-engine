@@ -12,6 +12,8 @@ ENGINE.Euler = function(yaw, pitch, roll) {
 };
 
 ENGINE.Euler.prototype = {
+    constructor: ENGINE.Euler,
+
     /**
      * Additionne deux angles eulériens
      * @param euler {ENGINE.Euler} seconde opérande
@@ -24,7 +26,23 @@ ENGINE.Euler.prototype = {
         return this;
     },
 
+    /**
+     * Restreint la rotation à :
+     * 2PI pour le cap
+     * PI/2 et -PI/2 pour le tanguage
+     * 2PI pour le roulis
+     */
+    restrictRotation: function () {
+        this.yaw = this.yaw % (Math.PI * 2);
+        this.pitch = Math.max(-PIUNDER2, Math.min(PIUNDER2, this.pitch));
+        this.roll = this.roll % (Math.PI * 2);
+    },
+
+    /**
+     * Affiche l'angle
+     * @returns {string}
+     */
     toString: function () {
         return this.yaw + " " + this.pitch + " " + this.roll;
     }
-}
+};

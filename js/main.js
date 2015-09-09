@@ -5,22 +5,24 @@ var scene;
 var keyPressed = [];
 var dragData = {};
 var toRad = Math.PI / 180;
+var camera;
 
 // FPS
 var start, fps = 0;
 
 function init() {
     canvas = document.getElementById("canvas");
-    ENGINE.initGL(canvas);
+    ENGINE.init(canvas);
 
-    scene = new ENGINE.Scene();
+    camera = new ENGINE.Camera();
+    scene = new ENGINE.Scene(camera);
 
     for(var i = 0; i < 100; i++) {
         var randX = Math.random() * 10 - 5;
         var randY = Math.random() * 10 - 5;
         var randZ = Math.random() * 10 + 5;
 
-        var box = new ENGINE.Box(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Euler(1, 0, 0), 0.2, 0.2, 0.2);
+        var box = new ENGINE.Box(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Euler(0, 0, 0), 0.2, 0.2, 0.2);
         scene.addShape(box);
     }
 
@@ -78,7 +80,7 @@ function loop() {
 
     scene.drawScene();
 
-    for(shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.05, 0.05, 0.02));
+    for(shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.05, 0.05, 0.05));
     window.requestAnimationFrame(loop);
 }
 
@@ -98,12 +100,12 @@ function handleKeyboardEvent() {
     for(key of keyPressed) {
         if(key == 97 || key == 98) {
             var dy = -((key - 97.5) * 0.2);
-            scene.camera.translate(new ENGINE.Vec3(0, dy, 0));
+            camera.translate(new ENGINE.Vec3(0, dy, 0));
         } else {
             var dz = -((key - 39) % 2) * 0.1;
             var dx = ((key - 38) % 2) * 0.1;
 
-            scene.camera.translate(new ENGINE.Vec3(dx, 0, dz));
+            camera.translate(new ENGINE.Vec3(dx, 0, dz));
         }
     }
 }
@@ -116,7 +118,6 @@ function handleMouseDrag() {
         var yaw = dragData["dx"] * toRad * 0.35;
         var pitch = dragData["dy"] * toRad * 0.35;
 
-        // TODO trouver pourquoi le pitch s'effectue dans le paramètre roll
-        scene.camera.rotate(new ENGINE.Euler(yaw, 0, pitch));
+        camera.rotate(new ENGINE.Euler(yaw, pitch, 0));
     }
 }

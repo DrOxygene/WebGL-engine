@@ -1,15 +1,15 @@
 /**
  * Créée une scène de rendu
+ * @param camera {ENGINE.Camera} la camera filmant la scène
  * @constructor
  */
-ENGINE.Scene = function() {
+ENGINE.Scene = function(camera) {
     this.shapes = [];
 
-    this.camera = new ENGINE.Camera().setPositionRotation(new ENGINE.Vec3(2, 0, 0), new ENGINE.Euler(0, 0, 0));
+    this.camera = camera || new ENGINE.Camera().setPositionRotation(new ENGINE.Vec3(0, 0, 0), new ENGINE.Euler(0, 0, 0));
 
     this.mMatrixArray = [];
     this.mMatrix = new ENGINE.Mat4();
-    this.pMatrix = new ENGINE.Mat4().perspective(Math.PI / 2, ENGINE.GL.viewportWidth / ENGINE.GL.viewportHeight, -0.01, 1); // TODO changer le type de camera grâce aux paramètres de la classe ENGINE
 
     ENGINE.GL.clearColor(0.0, 0.0, 0.0, 1.0);
     ENGINE.GL.enable(ENGINE.GL.DEPTH_TEST);
@@ -51,8 +51,7 @@ ENGINE.Scene.prototype = {
      * Envois la matrice modèle-vue-projection aux shaders
      */
     setMVPMatrix: function () {
-        var mvpMatrix = this.pMatrix.clone();
-        mvpMatrix.multiply(this.camera.getViewMatrix()).multiply(this.mMatrix);
+        var mvpMatrix = this.camera.getPerspectiveViewMatrix().multiply(this.mMatrix);
         ENGINE.GL.uniformMatrix4fv(ENGINE.shaderProgram.mvpMatrixUniform, false, mvpMatrix.data);
     },
 

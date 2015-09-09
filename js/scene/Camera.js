@@ -6,7 +6,8 @@ ENGINE.Camera = function() {
     this.eRotation = new ENGINE.Euler();
     this.qRotation = new ENGINE.Quat().fromEuler(this.eRotation);
 
-    this.viewMatrix = new ENGINE.Mat4();
+    this.vMatrix = new ENGINE.Mat4();
+    this.pMatrix = new ENGINE.Mat4().perspective(Math.PI / 2, ENGINE.GL.viewportWidth / ENGINE.GL.viewportHeight, -0.01, 1); // TODO changer le type de camera grâce aux paramètres de la classe ENGINE
 };
 
 ENGINE.Camera.prototype = {
@@ -27,8 +28,8 @@ ENGINE.Camera.prototype = {
      * @param rot {ENGINE.Euler} rotation
      */
     rotate: function (rot) {
-        //TODO limiter la rotation
         this.eRotation.add(rot);
+        this.eRotation.restrictRotation();
         this.qRotation.fromEuler(this.eRotation);
     },
 
@@ -41,11 +42,11 @@ ENGINE.Camera.prototype = {
     },
 
     /**
-     * Retourne la matrice de vue
+     * Retourne la matrice de vue-perspective
      * @returns {ENGINE.Mat4}
      */
-    getViewMatrix: function () {
-        this.viewMatrix.setTranslation(this.position).rotateFromQuaternion(this.qRotation);
-        return this.viewMatrix.inverse();
+    getPerspectiveViewMatrix: function () {
+        this.vMatrix.setTranslation(this.position).rotateFromQuaternion(this.qRotation);
+        return this.pMatrix.clone().multiply(this.vMatrix.inverse());
     }
 };

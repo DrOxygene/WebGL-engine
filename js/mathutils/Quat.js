@@ -36,11 +36,12 @@ ENGINE.Quat.prototype = {
     /**
      * Définie les coordonnées du quaternion à partir d'un
      * angle eulerien
+     * TODO inversion entre c2 et c3, s2 et s3 pour résoudre temporairement le problème des axes de rotation
      * @param euler {ENGINE.Euler} rotation eulerienne
      * @returns {ENGINE.Quat}
      */
     fromEuler: function (euler) {
-        var c1 = Math.cos(euler.yaw * 0.5), c2 = Math.cos(euler.pitch * 0.5), c3 = Math.cos(euler.roll * 0.5), s1 = Math.sin(euler.yaw * 0.5), s2 = Math.sin(euler.pitch * 0.5), s3 = Math.sin(euler.roll * 0.5);
+        var c1 = Math.cos(euler.yaw * 0.5), c2 = Math.cos(euler.roll * 0.5), c3 = Math.cos(euler.pitch * 0.5), s1 = Math.sin(euler.yaw * 0.5), s2 = Math.sin(euler.roll * 0.5), s3 = Math.sin(euler.pitch * 0.5);
 
         // Similaire à la multiplication de 3 quaternions, mais moins gourmand.
         // Trouvé sur : www.euclideanspace.com
@@ -57,11 +58,11 @@ ENGINE.Quat.prototype = {
      * @param mat {ENGINE.Mat4} la matrice de rotation
      * @returns {ENGINE.Quat}
      */
-    setFromMatrix: function (mat) {
+    fromMatrix: function (mat) {
         var w = Math.sqrt(1 + mat.data[0] + mat.data[5] + mat.data[10]) / 2;
-        var x = (mat.data[9] - mat.data[6]) / (4 * w);
-        var y = (mat.data[2] - mat.data[8]) / (4 * w);
-        var z = (mat.data[4] - mat.data[1]) / (4 * w);
+        var x = (mat.data[6] - mat.data[9]) / (4 * w);
+        var y = (mat.data[8] - mat.data[2]) / (4 * w);
+        var z = (mat.data[1] - mat.data[4]) / (4 * w);
         return this.set(w, x, y, z);
     },
 

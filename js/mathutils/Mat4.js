@@ -11,6 +11,8 @@ ENGINE.Mat4 = function(data) {
 };
 
 ENGINE.Mat4.prototype = {
+    constructor: ENGINE.Mat4,
+
     /**
      * Définie les nouvelles données de la matrice
      * @param data {Array}
@@ -97,15 +99,15 @@ ENGINE.Mat4.prototype = {
 
     /**
      * Pivote la matrice à partir d'un quaternion
-     * @param q {ENGINE.Quat}
+     * @param q {ENGINE.Quat} le quaternion
      * @returns {ENGINE.Mat4}
      */
     rotateFromQuaternion: function (q) {
         return this.multiply(new ENGINE.Mat4([
-            1 - 2 * q.y * q.y - 2 * q.z * q.z, 2 * q.x * q.y + 2 * q.z * q.w,     2 * q.x * q.z - 2 * q.y * q.w, 0,
-            2 * q.x * q.y - 2 * q.z * q.w,     1 - 2 * q.x * q.x - 2 * q.z * q.z, 2 * q.y * q.z + 2 * q.x * q.w, 0,
+            1 - 2 * q.y * q.y - 2 * q.z * q.z, 2 * q.x * q.y + 2 * q.z * q.w,     2 * q.x * q.z - 2 * q.y * q.w,     0,
+            2 * q.x * q.y - 2 * q.z * q.w,     1 - 2 * q.x * q.x - 2 * q.z * q.z, 2 * q.y * q.z + 2 * q.x * q.w,     0,
             2 * q.x * q.z + 2 * q.y * q.w,     2 * q.y * q.z - 2 * q.x * q.w,     1 - 2 * q.x * q.x - 2 * q.y * q.y, 0,
-            0, 0, 0, 1
+            0,                                 0,                                 0,                                 1
         ]));
     },
 
