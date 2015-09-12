@@ -1,7 +1,7 @@
 /**
  * Construit une forme géométrique
- * @param position {ENGINE.Vec3} la position
- * @param rotation {ENGINE.Euler} la rotation
+ * @param [position] {ENGINE.Vec3} la position
+ * @param [rotation] {ENGINE.Euler} la rotation
  * @constructor
  */
 ENGINE.Shape = function(position, rotation) {

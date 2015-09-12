@@ -1,8 +1,8 @@
 /**
  * Construit un vecteur en 3 dimmension
- * @param x {number}
- * @param y {number}
- * @param z {number}
+ * @param [x] {number} x
+ * @param [y] {number} y
+ * @param [z] {number} z
  * @constructor
  */
 ENGINE.Vec3 = function (x, y, z) {
@@ -167,4 +167,18 @@ ENGINE.Vec3.quatTransform = function (vec, quat) {
     var vecPart = quat.getImaginary();
     var v = ENGINE.Vec3.cross(vecPart, vec).multiply(2);
     return ENGINE.Vec3.cross(vecPart, v).add(vec).add(v.multiply(quat.getReal()));
-}
+};
+
+/**
+ * Applique une transformation à un vecteur
+ * @param vec {ENGINE.Vec3} le vecteur à transformer
+ * @param mat {ENGINE.Mat4} la matrice de transformation
+ * @returns {ENGINE.Vec3}
+ */
+ENGINE.Vec3.matTransform = function(vec, mat) {
+    var out = [];
+    for(var i = 0; i < 4; i++) {
+        out.push(mat.data[i] * vec.x + mat.data[i + 4] * vec.y + mat.data[i + 8] * vec.z + mat.data[i + 12]);
+    }
+    return new ENGINE.Vec3(out[0], out[1], out[2]);
+};

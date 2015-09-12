@@ -1,10 +1,10 @@
 /**
  * Créée un nouveau quaternion à partir
  * des coordonnées passées en paramètre
- * @param w {number}
- * @param x {number}
- * @param y {number}
- * @param z {number}
+ * @param [w] {number}
+ * @param [x] {number}
+ * @param [y] {number}
+ * @param [z] {number}
  * @constructor
  */
 ENGINE.Quat = function (w, x, y, z) {

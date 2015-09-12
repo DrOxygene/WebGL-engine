@@ -5,14 +5,15 @@
  */
 ENGINE.Scene = function(camera) {
     this.shapes = [];
+    this.lights = [];
 
     this.camera = camera || new ENGINE.Camera().setPositionRotation(new ENGINE.Vec3(0, 0, 0), new ENGINE.Euler(0, 0, 0));
 
     this.mMatrixArray = [];
     this.mMatrix = new ENGINE.Mat4();
 
-    ENGINE.GL.clearColor(0.0, 0.0, 0.0, 1.0);
-    ENGINE.GL.enable(ENGINE.GL.DEPTH_TEST);
+    GL.clearColor(0.0, 0.0, 0.0, 1.0);
+    GL.enable(GL.DEPTH_TEST);
 };
 
 ENGINE.Scene.prototype = {
@@ -23,9 +24,16 @@ ENGINE.Scene.prototype = {
      * compose
      */
     drawScene: function () {
-        var GL = ENGINE.GL;
         GL.viewport(0, 0, GL.viewportWidth, GL.viewportHeight);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
+        for(var i = 0; i < this.lights.length; i++) {
+            var pos = ENGINE.Vec3.matTransform(this.lights[i].position, this.camera.getViewMatrix());
+            var col = this.lights[i].color;
+
+            GL.uniform3fv(ENGINE.shaderProgram.lights[i].position, [pos.x, pos.y, pos.z]);
+            GL.uniform4fv(ENGINE.shaderProgram.lights[i].color, [col.r, col.g, col.b, col.a]);
+        }
 
         for(let shape of this.shapes) {
             shape.renderShape(this);
@@ -51,8 +59,10 @@ ENGINE.Scene.prototype = {
      * Envois la matrice modèle-vue-projection aux shaders
      */
     setMVPMatrix: function () {
-        var mvpMatrix = this.camera.getPerspectiveViewMatrix().multiply(this.mMatrix);
-        ENGINE.GL.uniformMatrix4fv(ENGINE.shaderProgram.mvpMatrixUniform, false, mvpMatrix.data);
+        var mvpMatrix = this.camera.getViewMatrix().multiply(this.mMatrix);
+        GL.uniformMatrix4fv(ENGINE.shaderProgram.mvMatrixUniform, false, mvpMatrix.data);
+        mvpMatrix = this.camera.getPerspectiveMatrix().multiply(mvpMatrix);
+        GL.uniformMatrix4fv(ENGINE.shaderProgram.mvpMatrixUniform, false, mvpMatrix.data);
     },
 
     /**
@@ -61,5 +71,13 @@ ENGINE.Scene.prototype = {
      */
     addShape: function (shape) {
         this.shapes.push(shape);
+    },
+
+    /**
+     * Ajoute une lumière à la scène
+     * @param light {ENGINE.Light} la lumière à ajouter
+     */
+    addLight: function (light) {
+        this.lights.push(light);
     }
 };

@@ -26,6 +26,21 @@ function init() {
         scene.addShape(box);
     }
 
+    camera.setPositionRotation(new ENGINE.Vec3(), new ENGINE.Euler());
+
+    for(var i = 0; i < 16; i++) {
+        var randX = Math.random() * 10 - 5;
+        var randY = Math.random() * 10 - 5;
+        var randZ = Math.random() * 10 + 5;
+
+        var randR = Math.random();
+        var randG = Math.random();
+        var randB = Math.random();
+
+        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0));
+        scene.addLight(light);
+    }
+
     initEvents();
 
     start = Date.now();

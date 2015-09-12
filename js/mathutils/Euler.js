@@ -1,8 +1,8 @@
 /**
  * Créée un angle eulerien
- * @param yaw {number} cap
- * @param pitch {number} tanguage
- * @param roll {number} roulis
+ * @param [yaw]   {number} cap
+ * @param [pitch] {number} tanguage
+ * @param [roll]  {number} roulis
  * @constructor
  */
 ENGINE.Euler = function(yaw, pitch, roll) {
@@ -43,6 +43,6 @@ ENGINE.Euler.prototype = {
      * @returns {string}
      */
     toString: function () {
-        return this.yaw + " " + this.pitch + " " + this.roll;
+        return "[y:" + this.yaw + ", p:" + this.pitch + " ,r:" + this.roll + "]";
     }
 };

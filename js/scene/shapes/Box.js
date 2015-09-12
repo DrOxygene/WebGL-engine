@@ -12,29 +12,7 @@ ENGINE.Box = function(position, rotation, width, height, depth) {
     this.width = width;
     this.height = height;
     this.depth = depth;
-
-    var GL = ENGINE.GL;
-
-    this.vertexColorBuffer = GL.createBuffer();
-    GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexColorBuffer);
-    var colors = [
-        [1.0, 0.0, 0.0, 1.0],
-        [1.0, 1.0, 0.0, 1.0],
-        [0.0, 1.0, 0.0, 1.0],
-        [1.0, 0.5, 0.5, 1.0],
-        [1.0, 0.0, 1.0, 1.0],
-        [0.0, 0.0, 1.0, 1.0]
-    ];
-    var unpackedColors = [];
-    for (var i in colors) {
-        var color = colors[i];
-        for (var j=0; j < 4; j++) {
-            unpackedColors = unpackedColors.concat(color);
-        }
-    }
-    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(unpackedColors), GL.STATIC_DRAW);
-    this.vertexColorBuffer.itemSize = 4;
-    this.vertexColorBuffer.numItems = 24;
+    this.geometry = new ENGINE.CubeGeometry();
 };
 
 ENGINE.Box.prototype = Object.create(ENGINE.Shape.prototype);
@@ -46,15 +24,15 @@ ENGINE.Box.constructor = ENGINE.Box;
  */
 ENGINE.Box.prototype.renderShape = function(scene) {
     //TODO voir si code redondant dans les autre classes de formes, pour les regrouper dans la classe shape
-    var GL = ENGINE.GL;
-    var vertexPositionBuffer = ENGINE.GeometryUtils.getCubeVertexPosition();
-    var vertexIndexBuffer = ENGINE.GeometryUtils.getCubeVertexIndex();
+    var vertexPositionBuffer = this.geometry.vertexPositionBuffer;
+    var vertexIndexBuffer = this.geometry.vertexIndexBuffer;
+    var vertexNormalBuffer = this.geometry.vertexNormalBuffer;
 
     GL.bindBuffer(GL.ARRAY_BUFFER, vertexPositionBuffer);
     GL.vertexAttribPointer(ENGINE.shaderProgram.vertexPositionAttribute, vertexPositionBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
-    GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexColorBuffer);
-    GL.vertexAttribPointer(ENGINE.shaderProgram.vertexColorAttribute, this.vertexColorBuffer.itemSize, GL.FLOAT, false, 0, 0);
+    GL.bindBuffer(GL.ARRAY_BUFFER, vertexNormalBuffer);
+    GL.vertexAttribPointer(ENGINE.shaderProgram.vertexNormalAttribute, vertexNormalBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 

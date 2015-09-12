@@ -1,6 +1,6 @@
 /**
  * Créée une matrice carré de taille 4
- * @param data {Array} les données de la matrice
+ * @param [data] {Array} les données de la matrice
  * @constructor
  */
 ENGINE.Mat4 = function(data) {
