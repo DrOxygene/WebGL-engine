@@ -15,7 +15,7 @@ function init() {
     ENGINE.enableOption(ENGINE.LIGHT_MASK);
     ENGINE.init(canvas);
 
-    camera = new ENGINE.Camera();
+    camera = new ENGINE.Camera("perspective");
     scene = new ENGINE.Scene(camera);
 
     var randX, randY, randZ;

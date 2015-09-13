@@ -1,13 +1,18 @@
 /**
  * Créée une camera
  */
-ENGINE.Camera = function() {
+ENGINE.Camera = function(type) {
     this.position = new ENGINE.Vec3();
     this.eRotation = new ENGINE.Euler();
     this.qRotation = new ENGINE.Quat().fromEuler(this.eRotation);
 
     this.vMatrix = new ENGINE.Mat4();
-    this.pMatrix = new ENGINE.Mat4().perspective(Math.PI / 2, GL.viewportWidth / GL.viewportHeight, -0.01, 1); // TODO changer le type de camera grâce aux paramètres de la classe ENGINE
+
+    if(type == "ortho") {
+        var w = GL.viewportWidth / 100;
+        var h = GL.viewportHeight / 100;
+        this.pMatrix = new ENGINE.Mat4().ortho(-w, w, -h, h, 1, 100);
+    } else if(type == "perspective") this.pMatrix = new ENGINE.Mat4().perspective(Math.PI / 2, GL.viewportWidth / GL.viewportHeight, -0.01, 1);
 };
 
 ENGINE.Camera.prototype = {

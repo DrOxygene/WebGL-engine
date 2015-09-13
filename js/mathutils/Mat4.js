@@ -142,6 +142,16 @@ ENGINE.Mat4.prototype = {
             0, 0, (2 * zFar * zNear) / fn, 0
         ]);
     },
+    
+    ortho: function (right, left, top, bottom, near, far) {
+        var rl = right - left, tb = top - bottom, fn = far - near;
+        return this.set([
+            2 / rl, 0, 0, 0,
+            0, 2 / tb, 0, 0,
+            0, 0, 2 / fn, 0,
+            -(right + left) / rl, -(top + bottom) / tb, -(far + near) / fn, 1
+        ]);
+    },
 
     /**
      * Transpose la matrice
