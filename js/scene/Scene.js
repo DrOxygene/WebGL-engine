@@ -12,7 +12,7 @@ ENGINE.Scene = function(camera) {
     this.mMatrixArray = [];
     this.mMatrix = new ENGINE.Mat4();
 
-    GL.clearColor(0.0, 0.0, 0.0, 1.0);
+    GL.clearColor(0.05, 0.05, 0.05, 1.0);
     GL.enable(GL.DEPTH_TEST);
 };
 
@@ -27,17 +27,17 @@ ENGINE.Scene.prototype = {
         GL.viewport(0, 0, GL.viewportWidth, GL.viewportHeight);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
-        for(var i = 0; i < this.lights.length; i++) {
-            var pos = ENGINE.Vec3.matTransform(this.lights[i].position, this.camera.getViewMatrix());
-            var col = this.lights[i].color;
+        if(ENGINE.isEnabled(ENGINE.LIGHT_MASK)) {
+            for (var i = 0; i < this.lights.length; i++) {
+                var pos = ENGINE.Vec3.matTransform(this.lights[i].position, this.camera.getViewMatrix());
+                var col = this.lights[i].color;
 
-            GL.uniform3fv(ENGINE.shaderProgram.lights[i].position, [pos.x, pos.y, pos.z]);
-            GL.uniform4fv(ENGINE.shaderProgram.lights[i].color, [col.r, col.g, col.b, col.a]);
+                GL.uniform3fv(ENGINE.shaderProgram["lightsUniform"][i].position, [pos.x, pos.y, pos.z]);
+                GL.uniform4fv(ENGINE.shaderProgram["lightsUniform"][i].color, [col.r, col.g, col.b, col.a]);
+            }
         }
 
-        for(let shape of this.shapes) {
-            shape.renderShape(this);
-        }
+        for(var shape of this.shapes) shape.renderShape(this);
     },
 
     /**
@@ -60,9 +60,9 @@ ENGINE.Scene.prototype = {
      */
     setMVPMatrix: function () {
         var mvpMatrix = this.camera.getViewMatrix().multiply(this.mMatrix);
-        GL.uniformMatrix4fv(ENGINE.shaderProgram.mvMatrixUniform, false, mvpMatrix.data);
+        GL.uniformMatrix4fv(ENGINE.shaderProgram["mvMatrixUniform"], false, mvpMatrix.data);
         mvpMatrix = this.camera.getPerspectiveMatrix().multiply(mvpMatrix);
-        GL.uniformMatrix4fv(ENGINE.shaderProgram.mvpMatrixUniform, false, mvpMatrix.data);
+        GL.uniformMatrix4fv(ENGINE.shaderProgram["mvpMatrixUniform"], false, mvpMatrix.data);
     },
 
     /**

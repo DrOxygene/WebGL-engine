@@ -12,15 +12,18 @@ var start, fps = 0;
 
 function init() {
     canvas = document.getElementById("canvas");
+    ENGINE.enableOption(ENGINE.LIGHT_MASK);
     ENGINE.init(canvas);
 
     camera = new ENGINE.Camera();
     scene = new ENGINE.Scene(camera);
 
+    var randX, randY, randZ;
+
     for(var i = 0; i < 100; i++) {
-        var randX = Math.random() * 10 - 5;
-        var randY = Math.random() * 10 - 5;
-        var randZ = Math.random() * 10 + 5;
+        randX = Math.random() * 10 - 5;
+        randY = Math.random() * 10 - 5;
+        randZ = Math.random() * 10 + 5;
 
         var box = new ENGINE.Box(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Euler(0, 0, 0), 0.2, 0.2, 0.2);
         scene.addShape(box);
@@ -28,10 +31,10 @@ function init() {
 
     camera.setPositionRotation(new ENGINE.Vec3(), new ENGINE.Euler());
 
-    for(var i = 0; i < 16; i++) {
-        var randX = Math.random() * 10 - 5;
-        var randY = Math.random() * 10 - 5;
-        var randZ = Math.random() * 10 + 5;
+    for(var j = 0; j < 16; j++) {
+        randX = Math.random() * 10 - 5;
+        randY = Math.random() * 10 - 5;
+        randZ = Math.random() * 10 + 5;
 
         var randR = Math.random();
         var randG = Math.random();
@@ -95,7 +98,7 @@ function loop() {
 
     scene.drawScene();
 
-    for(shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.05, 0.05, 0.05));
+    for(var shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.02, 0.02, 0.02));
     window.requestAnimationFrame(loop);
 }
 
@@ -112,7 +115,7 @@ function countFPS() {
  * Execute les actions qui découlent des touches du clavier activées
  */
 function handleKeyboardEvent() {
-    for(key of keyPressed) {
+    for(var key of keyPressed) {
         if(key == 97 || key == 98) {
             var dy = -((key - 97.5) * 0.2);
             camera.translate(new ENGINE.Vec3(0, dy, 0));
