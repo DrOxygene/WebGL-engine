@@ -4,7 +4,8 @@
  * @param [color] {ENGINE.Color} couleur
  * @constructor
  */
-ENGINE.Light = function(position, color) {
+ENGINE.Light = function(position, color, brightness) {
     this.position = position || new ENGINE.Vec3();
     this.color = color || new ENGINE.Color();
+    this.brightness = brightness || 1.0;
 };

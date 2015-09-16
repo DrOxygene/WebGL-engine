@@ -142,7 +142,17 @@ ENGINE.Mat4.prototype = {
             0, 0, (2 * zFar * zNear) / fn, 0
         ]);
     },
-    
+
+    /**
+     * Retourne la matrice orthographique
+     * @param right {number} bord droit de la fenetre
+     * @param left {number} bord gauche de la fenetre
+     * @param top {number} bord supérieur de la fenetre
+     * @param bottom {number} bord inférieur de la fenetre
+     * @param near {number} zone proche
+     * @param far {number} zone éloignée (distance de rendu)
+     * @returns {ENGINE.Mat4}
+     */
     ortho: function (right, left, top, bottom, near, far) {
         var rl = right - left, tb = top - bottom, fn = far - near;
         return this.set([

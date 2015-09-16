@@ -45,6 +45,8 @@ ENGINE.WebGLProgram.prototype = {
         shaderFragment = GL.createShader(GL.FRAGMENT_SHADER);
         shaderVertex = GL.createShader(GL.VERTEX_SHADER);
 
+        //alert(ENGINE.WebGLShader.buildVertex(this.variables.vertex));
+
         GL.shaderSource(shaderVertex, ENGINE.WebGLShader.buildVertex(this.variables.vertex));
         GL.compileShader(shaderVertex);
 
@@ -52,6 +54,8 @@ ENGINE.WebGLProgram.prototype = {
             alert(GL.getShaderInfoLog(shaderVertex));
             return null;
         }
+
+        //alert(ENGINE.WebGLShader.buildFragment(this.variables.fragment));
 
         GL.shaderSource(shaderFragment, ENGINE.WebGLShader.buildFragment(this.variables.fragment));
         GL.compileShader(shaderFragment);
@@ -71,7 +75,7 @@ ENGINE.WebGLProgram.prototype = {
      */
     loadAttributesLocation: function(shaderProgram, attributes) {
         for(var attrib of attributes) {
-            if(!ENGINE.isEnabled(attrib.implementWhen)) continue;
+            if(!this.canImplement(attrib)) continue;
 
             shaderProgram[attrib.name] = GL.getAttribLocation(shaderProgram, attrib.shaderName);
             if(attrib.isArray) GL.enableVertexAttribArray(shaderProgram[attrib.name]);
@@ -85,7 +89,7 @@ ENGINE.WebGLProgram.prototype = {
      */
     loadUniformsLocation: function(shaderProgram, uniforms) {
         for(var uniform of uniforms) {
-            if(!ENGINE.isEnabled(uniform.implementWhen)) continue;
+            if(!this.canImplement(uniform)) continue;
 
             if(uniform.isArray) {
                 var struct = this.getStructByName(uniform.type);
@@ -118,5 +122,12 @@ ENGINE.WebGLProgram.prototype = {
                 shaderProgram[uniform.name][i][struct.data[j].name] = GL.getUniformLocation(shaderProgram, uniform.shaderName + "[" + i + "]." + struct.data[j].name);
             }
         }
+    },
+
+    canImplement: function (variable) {
+        for(var condition of variable.implementWhen) {
+            if(ENGINE.isEnabled(condition)) return true;
+        }
+        return false;
     }
 };

@@ -27,11 +27,13 @@ ENGINE.Scene.prototype = {
         GL.viewport(0, 0, GL.viewportWidth, GL.viewportHeight);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
-        if(ENGINE.isEnabled(ENGINE.LIGHT_MASK)) {
+        if(ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK) || ENGINE.isEnabled(ENGINE.VERTEX_LIGHT_MASK)) {
             for (var i = 0; i < this.lights.length; i++) {
                 var pos = ENGINE.Vec3.matTransform(this.lights[i].position, this.camera.getViewMatrix());
                 var col = this.lights[i].color;
+                var brightness= this.lights[i].brightness * 1.0;
 
+                GL.uniform1f(ENGINE.shaderProgram["lightsUniform"][i].brightness, brightness);
                 GL.uniform3fv(ENGINE.shaderProgram["lightsUniform"][i].position, [pos.x, pos.y, pos.z]);
                 GL.uniform4fv(ENGINE.shaderProgram["lightsUniform"][i].color, [col.r, col.g, col.b, col.a]);
             }

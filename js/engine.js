@@ -1,7 +1,8 @@
 var ENGINE = {
     OPTION: 1,
     DEFAULT_MASK: 1,
-    LIGHT_MASK: 2,
+    FRAGMENT_LIGHT_MASK: 2,
+    VERTEX_LIGHT_MASK: 4,
 
     MAX_LIGHT: 16
 };

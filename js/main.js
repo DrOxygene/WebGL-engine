@@ -12,7 +12,7 @@ var start, fps = 0;
 
 function init() {
     canvas = document.getElementById("canvas");
-    ENGINE.enableOption(ENGINE.LIGHT_MASK);
+    ENGINE.enableOption(ENGINE.FRAGMENT_LIGHT_MASK);
     ENGINE.init(canvas);
 
     camera = new ENGINE.Camera("perspective");
@@ -20,7 +20,7 @@ function init() {
 
     var randX, randY, randZ;
 
-    for(var i = 0; i < 100; i++) {
+    for(var i = 0; i < 200; i++) {
         randX = Math.random() * 10 - 5;
         randY = Math.random() * 10 - 5;
         randZ = Math.random() * 10 + 5;
@@ -40,7 +40,7 @@ function init() {
         var randG = Math.random();
         var randB = Math.random();
 
-        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0));
+        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0), 0.2);
         scene.addLight(light);
     }
 
@@ -98,7 +98,7 @@ function loop() {
 
     scene.drawScene();
 
-    for(var shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.02, 0.02, 0.02));
+    for(var shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.01, 0.01, 0.01));
     window.requestAnimationFrame(loop);
 }
 

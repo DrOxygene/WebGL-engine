@@ -1,5 +1,6 @@
 /**
  * Créée une camera
+ * @param type {String} type de camera : ortho ou perspective
  */
 ENGINE.Camera = function(type) {
     this.position = new ENGINE.Vec3();

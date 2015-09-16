@@ -27,10 +27,8 @@ ENGINE.Shape.prototype = {
         GL.bindBuffer(GL.ARRAY_BUFFER, vertexPositionBuffer);
         GL.vertexAttribPointer(ENGINE.shaderProgram["vertexPositionAttribute"], vertexPositionBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
-        if(ENGINE.isEnabled(ENGINE.LIGHT_MASK)) {
-            GL.bindBuffer(GL.ARRAY_BUFFER, vertexNormalBuffer);
-            GL.vertexAttribPointer(ENGINE.shaderProgram["vertexNormalAttribute"], vertexNormalBuffer.itemSize, GL.FLOAT, false, 0, 0);
-        }
+        GL.bindBuffer(GL.ARRAY_BUFFER, vertexNormalBuffer);
+        GL.vertexAttribPointer(ENGINE.shaderProgram["vertexNormalAttribute"], vertexNormalBuffer.itemSize, GL.FLOAT, false, 0, 0);
 
         GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
