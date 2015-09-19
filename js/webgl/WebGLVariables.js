@@ -3,12 +3,14 @@ ENGINE.WebGLVariable = function () {
         preprocessor: [
             (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK) || ENGINE.isEnabled(ENGINE.VERTEX_LIGHT_MASK)) ? 'MAX_LIGHT ' + ENGINE.MAX_LIGHT : '',
             (ENGINE.isEnabled(ENGINE.VERTEX_LIGHT_MASK)) ? 'VERTEX_LIGHTING' : '',
-            (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK)) ? 'FRAGMENT_LIGHTING' : ''
+            (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK)) ? 'FRAGMENT_LIGHTING' : '',
+            (ENGINE.isEnabled(ENGINE.TEXTURE_MASK)) ? 'TEXTURE' : ''
         ],
 
         attributes: [
             {name:"vertexPositionAttribute", shaderName:"aVertexPosition", type:"vec3", isArray:true, implementWhen:[ENGINE.DEFAULT_MASK]},
-            {name:"vertexNormalAttribute", shaderName:"aVertexNormal", type:"vec3", isArray:true, implementWhen:[ENGINE.DEFAULT_MASK]}
+            {name:"vertexNormalAttribute", shaderName:"aVertexNormal", type:"vec3", isArray:true, implementWhen:[ENGINE.DEFAULT_MASK]},
+            {name:"vertexTextureCoordAttribute", shaderName:"aVertexTextureCoord", type:"vec2", isArray:true, implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
 
         uniforms: [
@@ -20,7 +22,8 @@ ENGINE.WebGLVariable = function () {
         varying: [
             {shaderName:"vNormal", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vPosition", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
-            {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]}
+            {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]},
+            {shaderName:"vTextureCoord", type:"vec2", implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
 
         struct: {
@@ -36,17 +39,21 @@ ENGINE.WebGLVariable = function () {
         preprocessor: [
             (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK) || ENGINE.isEnabled(ENGINE.VERTEX_LIGHT_MASK)) ? 'MAX_LIGHT ' + ENGINE.MAX_LIGHT : '',
             (ENGINE.isEnabled(ENGINE.VERTEX_LIGHT_MASK)) ? 'VERTEX_LIGHTING' : '',
-            (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK)) ? 'FRAGMENT_LIGHTING' : ''
+            (ENGINE.isEnabled(ENGINE.FRAGMENT_LIGHT_MASK)) ? 'FRAGMENT_LIGHTING' : '',
+            (ENGINE.isEnabled(ENGINE.TEXTURE_MASK)) ? 'TEXTURE' : ''
         ],
 
         uniforms: [
-            {name:"lightsUniform", shaderName:"uLights", type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]}
+            {name:"lightsUniform", shaderName:"uLights", type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
+            {name:"textureDiffuseUniform", shaderName:"uDiffuseTexture", type:"sampler2D", isArray:false, implementWhen:[ENGINE.TEXTURE_MASK]},
+            {name:"textureNormalUniform", shaderName:"uNormalTexture", type:"sampler2D", isArray:false, implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
 
         varying: [
             {shaderName:"vNormal", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vPosition", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
-            {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]}
+            {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]},
+            {shaderName:"vTextureCoord", type:"vec2", implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
 
         struct: {

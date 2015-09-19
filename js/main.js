@@ -13,34 +13,38 @@ var start, fps = 0;
 function init() {
     canvas = document.getElementById("canvas");
     ENGINE.enableOption(ENGINE.FRAGMENT_LIGHT_MASK);
+    ENGINE.enableOption(ENGINE.TEXTURE_MASK);
+    ENGINE.enableOption(ENGINE.TEXTURE_NORMAL_MASK);
     ENGINE.init(canvas);
 
     camera = new ENGINE.Camera("perspective");
     scene = new ENGINE.Scene(camera);
 
     var randX, randY, randZ;
+    var mat = new ENGINE.Material().bindDiffuse("img/metalic_diffuse.png").bindNormal("img/metalic_normal.png");
 
     for(var i = 0; i < 200; i++) {
-        randX = Math.random() * 10 - 5;
-        randY = Math.random() * 10 - 5;
-        randZ = Math.random() * 10 + 5;
+        randX = Math.random() * 5 - 2.5;
+        randY = Math.random() * 5 - 2.5;
+        randZ = Math.random() * 5 + 2.5;
 
         var box = new ENGINE.Box(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Euler(0, 0, 0), 0.2, 0.2, 0.2);
+        box.bindMaterial(mat);
         scene.addShape(box);
     }
 
     camera.setPositionRotation(new ENGINE.Vec3(), new ENGINE.Euler());
 
-    for(var j = 0; j < 16; j++) {
-        randX = Math.random() * 10 - 5;
-        randY = Math.random() * 10 - 5;
-        randZ = Math.random() * 10 + 5;
+    for(var j = 0; j < 8; j++) {
+        randX = Math.random() * 5 - 2.5;
+        randY = Math.random() * 5 - 2.5;
+        randZ = Math.random() * 5 + 2.5;
 
         var randR = Math.random();
         var randG = Math.random();
         var randB = Math.random();
 
-        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0), 0.2);
+        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0), 0.75);
         scene.addLight(light);
     }
 
@@ -105,7 +109,7 @@ function loop() {
 function countFPS() {
     fps++;
     if(Date.now() - start >= 1000) {
-        document.getElementById("output").innerHTML = fps;
+        document.getElementById("output").innerHTML = "" + fps;
         fps = 0;
         start = Date.now();
     }

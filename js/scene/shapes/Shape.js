@@ -23,9 +23,25 @@ ENGINE.Shape.prototype = {
         var vertexPositionBuffer = this.geometry.vertexPositionBuffer;
         var vertexIndexBuffer = this.geometry.vertexIndexBuffer;
         var vertexNormalBuffer = this.geometry.vertexNormalBuffer;
+        var vertexTextureCoordBuffer = this.geometry.vertexTextureCoordBuffer;
 
         GL.bindBuffer(GL.ARRAY_BUFFER, vertexPositionBuffer);
         GL.vertexAttribPointer(ENGINE.shaderProgram["vertexPositionAttribute"], vertexPositionBuffer.itemSize, GL.FLOAT, false, 0, 0);
+
+        if(ENGINE.isEnabled(ENGINE.TEXTURE_MASK)) {
+            GL.bindBuffer(GL.ARRAY_BUFFER, vertexTextureCoordBuffer);
+            GL.vertexAttribPointer(ENGINE.shaderProgram["vertexTextureCoordAttribute"], vertexTextureCoordBuffer.itemSize, GL.FLOAT, false, 0, 0);
+
+            GL.activeTexture(GL.TEXTURE0);
+            GL.bindTexture(GL.TEXTURE_2D, this.material.diffuse);
+            GL.uniform1i(ENGINE.shaderProgram["textureDiffuseUniform"], 0);
+
+            if(this.material.normal) {
+                GL.activeTexture(GL.TEXTURE1);
+                GL.bindTexture(GL.TEXTURE_2D, this.material.normal);
+                GL.uniform1i(ENGINE.shaderProgram["textureNormalUniform"], 1);
+            }
+        }
 
         GL.bindBuffer(GL.ARRAY_BUFFER, vertexNormalBuffer);
         GL.vertexAttribPointer(ENGINE.shaderProgram["vertexNormalAttribute"], vertexNormalBuffer.itemSize, GL.FLOAT, false, 0, 0);
@@ -41,6 +57,8 @@ ENGINE.Shape.prototype = {
         scene.popMatrix();
     },
 
+    // TODO fusionner plusieurs formes
+
     /**
      * Pivote la forme
      * @param rot {ENGINE.Euler} rotation eulerienne
@@ -48,5 +66,13 @@ ENGINE.Shape.prototype = {
     rotate: function(rot) {
         this.eRotation.add(rot);
         this.qRotation.fromEuler(this.eRotation);
+    },
+
+    /**
+     * Défini la texture de la forme
+     * @param mat {ENGINE.Material} la texture
+     */
+    bindMaterial: function(mat) {
+        this.material = mat;
     }
 };

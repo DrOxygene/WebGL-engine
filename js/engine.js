@@ -3,8 +3,9 @@ var ENGINE = {
     DEFAULT_MASK: 1,
     FRAGMENT_LIGHT_MASK: 2,
     VERTEX_LIGHT_MASK: 4,
+    TEXTURE_MASK: 8,
 
-    MAX_LIGHT: 16
+    MAX_LIGHT: 8
 };
 
 var GL;

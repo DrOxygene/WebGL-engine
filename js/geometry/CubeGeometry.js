@@ -80,6 +80,43 @@ ENGINE.CubeGeometry = function() {
     this.vertexNormalBuffer.itemSize = 3;
     this.vertexNormalBuffer.numItems = 24;
 
+    this.vertexTextureCoordBuffer = GL.createBuffer();
+    GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+    var textureCoords = [
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        0.0, 0.0,
+
+        0.0, 1.0,
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+
+        1.0, 1.0,
+        0.0, 1.0,
+        0.0, 0.0,
+        1.0, 0.0,
+
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        0.0, 0.0,
+
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    ];
+    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(textureCoords), GL.STATIC_DRAW);
+    this.vertexTextureCoordBuffer.itemSize = 2;
+    this.vertexTextureCoordBuffer.numItems = 24;
+
     this.vertexIndexBuffer = GL.createBuffer();
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
     var cubeVertexIndices = [
