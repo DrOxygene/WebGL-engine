@@ -14,14 +14,13 @@ function init() {
     canvas = document.getElementById("canvas");
     ENGINE.enableOption(ENGINE.FRAGMENT_LIGHT_MASK);
     ENGINE.enableOption(ENGINE.TEXTURE_MASK);
-    ENGINE.enableOption(ENGINE.TEXTURE_NORMAL_MASK);
     ENGINE.init(canvas);
 
     camera = new ENGINE.Camera("perspective");
     scene = new ENGINE.Scene(camera);
 
     var randX, randY, randZ;
-    var mat = new ENGINE.Material().bindDiffuse("img/metalic_diffuse.png").bindNormal("img/metalic_normal.png");
+    var mat = new ENGINE.Material().bindDiffuse("img/metalic_diffuse.png", 2).bindNormal("img/metalic_normal.png", 2);
 
     for(var i = 0; i < 200; i++) {
         randX = Math.random() * 5 - 2.5;
@@ -44,9 +43,33 @@ function init() {
         var randG = Math.random();
         var randB = Math.random();
 
-        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0), 0.75);
+        var light = new ENGINE.Light(new ENGINE.Vec3(randX, randY, randZ), new ENGINE.Color(randR, randG, randB, 1.0), 1.0);
         scene.addLight(light);
     }
+
+    /*camera = new ENGINE.Camera("perspective");
+    camera.setPositionRotation(new ENGINE.Vec3(0.0, 0.0, 0.0), new ENGINE.Euler());
+    scene = new ENGINE.Scene(camera);
+
+    var pos1 = new ENGINE.Vec3(0, 0, 1);
+    var pos2 = new ENGINE.Vec3(0.75, 0, 1);
+
+    var rot1 = new ENGINE.Euler(0, 0.3, 0.0);
+    var rot2 = new ENGINE.Euler(0, 0, 0.75);
+
+    var mat1 = new ENGINE.Material().bindDiffuse("img/metalic_diffuse.png", 2).bindNormal("img/metalic_normal.png", 2);
+
+    var b1 = new ENGINE.Box(pos1, rot1, 0.2, 0.2, 0.2);
+    var b2 = new ENGINE.Box(pos2, rot2, 0.3, 0.3, 0.3);
+    b1.bindMaterial(mat1);
+    b2.bindMaterial(mat1);
+    scene.addShape(b1);
+    scene.addShape(b2);
+
+    var lpos = new ENGINE.Vec3(0, 0, 0.0);
+    var lcol = new ENGINE.Color(1.0, 1.0, 1.0, 1.0);
+    var l = new ENGINE.Light(lpos, lcol, 2.0);
+    scene.addLight(l);*/
 
     initEvents();
 
@@ -102,7 +125,7 @@ function loop() {
 
     scene.drawScene();
 
-    for(var shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.01, 0.01, 0.01));
+    for(var shape of scene.shapes) shape.rotate(new ENGINE.Euler(0.0025, 0.0025, 0.0025));
     window.requestAnimationFrame(loop);
 }
 
@@ -121,11 +144,11 @@ function countFPS() {
 function handleKeyboardEvent() {
     for(var key of keyPressed) {
         if(key == 97 || key == 98) {
-            var dy = -((key - 97.5) * 0.2);
+            var dy = -((key - 97.5) * 0.05);
             camera.translate(new ENGINE.Vec3(0, dy, 0));
         } else {
-            var dz = -((key - 39) % 2) * 0.1;
-            var dx = ((key - 38) % 2) * 0.1;
+            var dz = -((key - 39) % 2) * 0.025;
+            var dx = ((key - 38) % 2) * 0.025;
 
             camera.translate(new ENGINE.Vec3(dx, 0, dz));
         }

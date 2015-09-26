@@ -10,6 +10,8 @@ ENGINE.Shape = function(geometry, position, rotation) {
     this.position = position || new ENGINE.Vec3();
     this.eRotation = rotation || new ENGINE.Euler();
     this.qRotation = new ENGINE.Quat().fromEuler(this.eRotation);
+
+    this.material = new ENGINE.Material();
 };
 
 ENGINE.Shape.prototype = {
@@ -34,13 +36,14 @@ ENGINE.Shape.prototype = {
 
             GL.activeTexture(GL.TEXTURE0);
             GL.bindTexture(GL.TEXTURE_2D, this.material.diffuse);
-            GL.uniform1i(ENGINE.shaderProgram["textureDiffuseUniform"], 0);
+            GL.uniform1i(ENGINE.shaderProgram["materialUniform"]["textureDiffuse"], 0);
 
-            if(this.material.normal) {
-                GL.activeTexture(GL.TEXTURE1);
-                GL.bindTexture(GL.TEXTURE_2D, this.material.normal);
-                GL.uniform1i(ENGINE.shaderProgram["textureNormalUniform"], 1);
-            }
+            GL.activeTexture(GL.TEXTURE1);
+            GL.bindTexture(GL.TEXTURE_2D, this.material.normal);
+            GL.uniform1i(ENGINE.shaderProgram["materialUniform"]["textureNormal"], 1);
+
+            GL.uniform1i(ENGINE.shaderProgram["materialUniform"]["textureNormal"], 1);
+            GL.uniform1i(ENGINE.shaderProgram["materialUniform"]["useNormal"], (this.material.normal) ? 1 : 0);
         }
 
         GL.bindBuffer(GL.ARRAY_BUFFER, vertexNormalBuffer);

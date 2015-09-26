@@ -16,12 +16,12 @@ ENGINE.WebGLVariable = function () {
         uniforms: [
             {name:"mvMatrixUniform", shaderName:"uMVMatrix", type:"mat4", isArray:false, implementWhen:[ENGINE.DEFAULT_MASK]},
             {name:"mvpMatrixUniform", shaderName:"uMVPMatrix", type:"mat4", isArray:false, implementWhen:[ENGINE.DEFAULT_MASK]},
-            {name:"lightsUniform", shaderName:"uLights", type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.VERTEX_LIGHT_MASK]}
+            {name:"lightsUniform", shaderName:"uLights", custom:true, type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.VERTEX_LIGHT_MASK]}
         ],
 
         varying: [
-            {shaderName:"vNormal", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vPosition", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
+            {shaderName:"vTBN", type:"mat3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]},
             {shaderName:"vTextureCoord", type:"vec2", implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
@@ -29,7 +29,7 @@ ENGINE.WebGLVariable = function () {
         struct: {
             Light:{implementWhen:[ENGINE.VERTEX_LIGHT_MASK], data: [
                 {name:"position", type:"vec3"},
-                {name:"color", type:"vec4"},
+                {name:"color", type:"vec3"},
                 {name:"brightness", type:"float"}
             ]}
         }
@@ -44,14 +44,13 @@ ENGINE.WebGLVariable = function () {
         ],
 
         uniforms: [
-            {name:"lightsUniform", shaderName:"uLights", type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
-            {name:"textureDiffuseUniform", shaderName:"uDiffuseTexture", type:"sampler2D", isArray:false, implementWhen:[ENGINE.TEXTURE_MASK]},
-            {name:"textureNormalUniform", shaderName:"uNormalTexture", type:"sampler2D", isArray:false, implementWhen:[ENGINE.TEXTURE_MASK]}
+            {name:"lightsUniform", shaderName:"uLights", custom:true, type:"Light", isArray:true, arrayLength:ENGINE.MAX_LIGHT, implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
+            {name:"materialUniform", shaderName:"uMaterial", custom:true, type:"Material", isArray:false, implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
 
         varying: [
-            {shaderName:"vNormal", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vPosition", type:"vec3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
+            {shaderName:"vTBN", type:"mat3", implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK]},
             {shaderName:"vColor", type:"vec4", implementWhen:[ENGINE.VERTEX_LIGHT_MASK]},
             {shaderName:"vTextureCoord", type:"vec2", implementWhen:[ENGINE.TEXTURE_MASK]}
         ],
@@ -59,8 +58,13 @@ ENGINE.WebGLVariable = function () {
         struct: {
             Light:{implementWhen:[ENGINE.FRAGMENT_LIGHT_MASK], data: [
                 {name:"position", type:"vec3"},
-                {name:"color", type:"vec4"},
+                {name:"color", type:"vec3"},
                 {name:"brightness", type:"float"}
+            ]},
+            Material:{implementWhen:[ENGINE.TEXTURE_MASK], data: [
+                {name:"textureDiffuse", type:"sampler2D"},
+                {name:"textureNormal", type:"sampler2D"},
+                {name:"useNormal", type:"bool"}
             ]}
         }
     };

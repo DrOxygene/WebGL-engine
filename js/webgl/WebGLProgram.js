@@ -91,9 +91,12 @@ ENGINE.WebGLProgram.prototype = {
         for(var uniform of uniforms) {
             if(!this.canImplement(uniform)) continue;
 
-            if(uniform.isArray) {
+            if(uniform.isArray && uniform.custom) {
                 var struct = this.getStructByName(uniform.type);
                 this.createUniformStructArrayPointer(shaderProgram, uniform, struct);
+            } else if(uniform.custom) {
+                var struct = this.getStructByName(uniform.type);
+                this.createUniformStructPointer(shaderProgram, uniform, struct);
             } else shaderProgram[uniform.name] = GL.getUniformLocation(shaderProgram, uniform.shaderName);
         }
     },
@@ -104,7 +107,7 @@ ENGINE.WebGLProgram.prototype = {
      * @returns {Object} la structure
      */
     getStructByName: function (name) {
-        return (this.variables.vertex.struct) ? this.variables.vertex.struct[name] : this.variables.fragment.struct[name];
+        return this.variables.vertex.struct[name] || this.variables.fragment.struct[name];
     },
 
     /**
@@ -124,6 +127,25 @@ ENGINE.WebGLProgram.prototype = {
         }
     },
 
+    /**
+     * Créée les pointeurs d'un uniform dont le type est une structure personnalisée
+     * @param shaderProgram {WebGLProgram} le programme de dessin
+     * @param uniform {Object} la variable uniform
+     * @param struct {Object} la structure
+     */
+    createUniformStructPointer: function (shaderProgram, uniform, struct) {
+        shaderProgram[uniform.name] = [];
+        for(var j = 0; j < struct.data.length; j++) {
+            shaderProgram[uniform.name][struct.data[j].name] = GL.getUniformLocation(shaderProgram, uniform.shaderName + "." + struct.data[j].name);
+        }
+    },
+
+    /**
+     * Retourne true si la variable peut être implémentée en
+     * fonction des options activées, false sinon
+     * @param variable {Object} la variable
+     * @returns {boolean}
+     */
     canImplement: function (variable) {
         for(var condition of variable.implementWhen) {
             if(ENGINE.isEnabled(condition)) return true;
