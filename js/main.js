@@ -13,7 +13,7 @@ var start, fps = 0;
 function init() {
     canvas = document.getElementById("canvas");
     ENGINE.enableOption(ENGINE.FRAGMENT_LIGHT_MASK);
-    ENGINE.enableOption(ENGINE.TEXTURE_MASK);
+    //ENGINE.enableOption(ENGINE.TEXTURE_MASK);
     ENGINE.init(canvas);
 
     camera = new ENGINE.Camera("perspective");

@@ -24,6 +24,7 @@ ENGINE.WebGLProgram.prototype = {
         var shaderProgram = ENGINE.shaderProgram = GL.createProgram();
         GL.attachShader(shaderProgram, shaders[0]);
         GL.attachShader(shaderProgram, shaders[1]);
+
         GL.linkProgram(shaderProgram);
 
         if (!GL.getProgramParameter(shaderProgram, GL.LINK_STATUS)) alert(GL.getProgramInfoLog(shaderProgram));
